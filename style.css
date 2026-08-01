@@ -224,7 +224,25 @@ a.icon-btn { text-decoration: none; }
 .btn-primary:hover { filter: brightness(1.08); }
 .btn-ghost { background: transparent; }
 
+.range-control { position: relative; }
+
 .select-wrap { display: flex; align-items: center; gap: 6px; }
+.custom-range-pop[hidden] { display: none; }
+.custom-range-pop {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.35);
+  animation: rise 0.15s ease both;
+}
 .date-input {
   font-family: var(--font-mono);
   font-size: 12.5px;
@@ -271,7 +289,7 @@ a.icon-btn { text-decoration: none; }
 .legend-swatch[data-lvl="4"] { background: var(--lvl4); }
 
 .heatmap-scroll { overflow-x: visible; }
-.heatmap-inner { display: flex; flex-direction: column; gap: 6px; width: fit-content; margin: 0 auto; }
+.heatmap-inner { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; margin: 0 auto; }
 .month-row { display: flex; padding-left: 38px; height: 18px; position: relative; }
 .month-label {
   position: absolute;

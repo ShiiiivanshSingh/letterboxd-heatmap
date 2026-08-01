@@ -223,6 +223,9 @@ function buildHeatmap(start, end) {
     });
     weeksEl.appendChild(col);
   });
+
+  const gridWidth = 38 + weeks.length * 19 - 4;
+  document.getElementById('heatmap-inner').style.width = gridWidth + 'px';
 }
 
 function showTooltip(e, key, titles) {
@@ -361,6 +364,12 @@ rangePills.addEventListener('click', e => {
 });
 rangeStart.addEventListener('change', () => { state.customStart = rangeStart.value; render(); });
 rangeEnd.addEventListener('change', () => { state.customEnd = rangeEnd.value; render(); });
+
+document.addEventListener('click', e => {
+  if (state.range !== 'custom') return;
+  if (e.target.closest('.range-control')) return;
+  customRangeWrap.hidden = true;
+});
 
 themeToggle.addEventListener('click', () => {
   state.theme = state.theme === 'dark' ? 'light' : 'dark';
