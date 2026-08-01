@@ -382,17 +382,24 @@ exportBtn.addEventListener('click', () => {
   const card = document.getElementById('heatmap-card');
   exportWatermark.textContent = (state.username ? '@' + state.username + ' · ' : '') + 'made by shivansh!';
   exportWatermark.classList.add('show');
+
+  const bgColor = getComputedStyle(document.documentElement).getPropertyValue('--surface').trim() || (state.theme === 'dark' ? '#12161b' : '#ffffff');
+
   html2canvas(card, {
-    backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--surface').trim(),
-    scale: 3
+    backgroundColor: bgColor,
+    scale: 3,
+    useCORS: true,
+    allowTaint: false
   }).then(canvas => {
     exportWatermark.classList.remove('show');
     const link = document.createElement('a');
     link.download = 'watch_log-heatmap.png';
     link.href = canvas.toDataURL('image/png');
     link.click();
-  }).catch(() => {
+  }).catch((error) => {
+    console.error("Export failed:", error);
     exportWatermark.classList.remove('show');
+    alert("Export failed! Check the developer console for details.");
   });
 });
 
