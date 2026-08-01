@@ -270,8 +270,8 @@ a.icon-btn { text-decoration: none; }
 .legend-swatch[data-lvl="3"] { background: var(--lvl3); }
 .legend-swatch[data-lvl="4"] { background: var(--lvl4); }
 
-.heatmap-scroll { overflow-x: auto; padding-bottom: 4px; display: flex; justify-content: center; }
-.heatmap-inner { display: inline-flex; flex-direction: column; gap: 6px; }
+.heatmap-scroll { overflow-x: visible; }
+.heatmap-inner { display: flex; flex-direction: column; gap: 6px; width: fit-content; margin: 0 auto; }
 .month-row { display: flex; padding-left: 38px; height: 18px; position: relative; }
 .month-label {
   position: absolute;
@@ -367,6 +367,8 @@ a.icon-btn { text-decoration: none; }
   .app { height: auto; min-height: 100vh; }
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
   .controls { gap: 6px; }
+  .heatmap-scroll { overflow-x: auto; }
+  .heatmap-inner { margin: 0; }
 }
 @media (max-width: 560px) {
   .stats-grid { grid-template-columns: 1fr 1fr; }
