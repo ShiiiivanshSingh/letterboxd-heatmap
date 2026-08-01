@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>watch_log — letterboxd heatmap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="upload-screen" class="upload-screen">
+  <div class="upload-card">
+    <div class="upload-eyebrow">$ ./watch_log</div>
+    <h1 class="upload-title">letterboxd, as a heatmap</h1>
+    <p class="upload-sub">drop in your export and see every day you spent watching something.</p>
+    <label for="file-input" class="drop-zone" id="drop-zone">
+      <span class="drop-zone-icon">▦</span>
+      <span class="drop-zone-text">drop <b>letterboxd-export.zip</b> here, or click to browse</span>
+      <span class="drop-zone-hint">nothing leaves your browser. parsed locally.</span>
+    </label>
+    <input type="file" id="file-input" accept=".zip" hidden>
+    <a class="upload-link" href="https://letterboxd.com/user/exportdata/" target="_blank" rel="noopener">don't have your export yet? get it here →</a>
+    <div id="upload-status" class="upload-status"></div>
+  </div>
+</div>
+
+<div id="app" class="app hidden">
+<div class="app-inner">
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">▦</span>
+      <span class="brand-name">watch_log</span>
+      <span class="brand-user" id="brand-user"></span>
+    </div>
+    <div class="controls">
+      <div class="segmented" id="range-pills">
+        <button class="segment" data-range="90">90d</button>
+        <button class="segment is-active" data-range="365">1y</button>
+        <button class="segment" data-range="all">all</button>
+        <button class="segment" data-range="custom">custom</button>
+      </div>
+
+      <div class="select-wrap" id="custom-range-wrap" hidden>
+        <input type="date" id="range-start" class="date-input">
+        <span class="range-sep">→</span>
+        <input type="date" id="range-end" class="date-input">
+      </div>
+
+      <button class="icon-btn" id="theme-toggle" title="toggle theme" aria-label="toggle theme">☾</button>
+      <a class="icon-btn" href="https://github.com/ShiiiivanshSingh/letterboxd-heatmap" target="_blank" rel="noopener" title="source on github" aria-label="source on github">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+      </a>
+      <button class="btn btn-ghost" id="change-file-btn">change file</button>
+      <button class="btn btn-primary" id="export-btn">export png</button>
+    </div>
+  </header>
+
+  <main class="main">
+    <section class="heatmap-card" id="heatmap-card">
+      <div class="heatmap-card-head">
+        <span class="heatmap-title" id="heatmap-title">last 365 days</span>
+        <span class="heatmap-legend">
+          <span class="legend-label">less</span>
+          <span class="legend-swatch" data-lvl="0"></span>
+          <span class="legend-swatch" data-lvl="1"></span>
+          <span class="legend-swatch" data-lvl="2"></span>
+          <span class="legend-swatch" data-lvl="3"></span>
+          <span class="legend-swatch" data-lvl="4"></span>
+          <span class="legend-label">more</span>
+        </span>
+      </div>
+      <div class="heatmap-scroll">
+        <div class="heatmap-inner" id="heatmap-inner">
+          <div class="month-row" id="month-row"></div>
+          <div class="heatmap-body">
+            <div class="day-labels" id="day-labels"></div>
+            <div class="weeks" id="weeks"></div>
+          </div>
+        </div>
+      </div>
+      <div class="watermark" id="export-watermark"></div>
+    </section>
+
+    <section class="stats-grid" id="stats-grid">
+      <div class="stat-card">
+        <span class="stat-value" id="stat-total">0</span>
+        <span class="stat-label">total movies</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value" id="stat-active">0</span>
+        <span class="stat-label">active days</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value" id="stat-longest">0</span>
+        <span class="stat-label">longest streak</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value" id="stat-current">0</span>
+        <span class="stat-label">current streak</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value" id="stat-mostday">0</span>
+        <span class="stat-label">most in one day</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value" id="stat-avgday">0</span>
+        <span class="stat-label">avg / day</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value" id="stat-avgactive">0</span>
+        <span class="stat-label">avg / active day</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value" id="stat-peak">—</span>
+        <span class="stat-label">peak day</span>
+      </div>
+    </section>
+  </main>
+
+</div>
+</div>
+
+<div class="tooltip" id="tooltip"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
