@@ -5,7 +5,7 @@
 a GitHub style contribution heatmap for your Letterboxd watch history
 
 
-<img width="1920" height="1080" alt="437_1x_shots_so" src="https://github.com/user-attachments/assets/1545521d-dd69-4206-96e9-a17ff4e41686" />
+<img width="1920" height="1080" alt="177_1x_shots_so" src="https://github.com/user-attachments/assets/2902f0d9-ce77-4b00-9d66-02cd086d4d89" />
 
 </div>
 
