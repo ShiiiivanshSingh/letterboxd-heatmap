@@ -389,7 +389,16 @@ exportBtn.addEventListener('click', () => {
     backgroundColor: bgColor,
     scale: 3,
     useCORS: true,
-    allowTaint: false
+    allowTaint: false,
+    onclone: (clonedDoc) => {
+      // Force all cells to their final visible state to bypass CSS animations
+      const cells = clonedDoc.querySelectorAll('.cell');
+      cells.forEach(cell => {
+        cell.style.setProperty('opacity', '1', 'important');
+        cell.style.setProperty('transform', 'scale(1)', 'important');
+        cell.style.setProperty('animation', 'none', 'important');
+      });
+    }
   }).then(canvas => {
     exportWatermark.classList.remove('show');
     const link = document.createElement('a');
