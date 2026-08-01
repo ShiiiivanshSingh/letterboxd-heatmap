@@ -8,6 +8,7 @@ const state = {
   theme: 'dark'
 };
 
+
 const uploadScreen = document.getElementById('upload-screen');
 const app = document.getElementById('app');
 const fileInput = document.getElementById('file-input');
